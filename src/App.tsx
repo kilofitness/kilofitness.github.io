@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { site } from "./data/site";
+import type { Trainer, TrainerImage } from "./data/site";
 
 type PhotoProps = {
   name: string;
@@ -26,10 +27,6 @@ const socialLinks = [
 ];
 
 const imageUrl = (filename: string) => `${import.meta.env.BASE_URL}images/${filename}`;
-const trainerImageUrl = (image: string) => {
-  if (/^https?:\/\//.test(image)) return image;
-  return imageUrl(image.replace(/^\/images\//, ""));
-};
 
 function Photo({ name, alt, width, height, className = "", eager = false, preferJpeg = false }: PhotoProps) {
   return (
@@ -73,6 +70,38 @@ function HeroMedia() {
         height={3944}
         loading="eager"
         fetchPriority="high"
+        decoding="async"
+      />
+    </picture>
+  );
+}
+
+type TrainerPhotoProps = {
+  image: TrainerImage;
+  className?: string;
+  sizes: string;
+};
+
+function TrainerPhoto({ image, className = "", sizes }: TrainerPhotoProps) {
+  const [smallWidth, largeWidth] = image.jpegWidths;
+
+  return (
+    <picture className={`photo ${className}`}>
+      {image.avifWidth && (
+        <source
+          type="image/avif"
+          srcSet={`${imageUrl(`${image.name}-${image.avifWidth}.avif`)} ${image.avifWidth}w`}
+          sizes={sizes}
+        />
+      )}
+      <img
+        src={imageUrl(`${image.name}-${largeWidth}.jpg`)}
+        srcSet={`${imageUrl(`${image.name}-${smallWidth}.jpg`)} ${smallWidth}w, ${imageUrl(`${image.name}-${largeWidth}.jpg`)} ${largeWidth}w`}
+        sizes={sizes}
+        alt={image.alt}
+        width={image.width}
+        height={image.height}
+        loading="lazy"
         decoding="async"
       />
     </picture>
@@ -312,43 +341,143 @@ function Space() {
   );
 }
 
-function Coach() {
+function TrainerProfile({ trainer }: { trainer: Trainer }) {
   return (
-    <section className="coach-section light-section" id="coach">
-      <div className="page-shell">
-        <p className="eyebrow reveal">YOUR COACH · 03</p>
-        <div className="coach-intro">
-          <div className="coach-image-wrap reveal-image">
-            <Photo name="bench" alt="KILO Fitness 訓練椅與暖色質感牆面" width={3944} height={7008} />
-            <p>UNDERSTAND · ADAPT · PROGRESS</p>
+    <article className="coach-profile" aria-labelledby={`${trainer.id}-name`}>
+      <header className="coach-feature">
+        <div className="coach-identity reveal">
+          <p className="coach-kicker">MEET YOUR COACH</p>
+          <h2 id={`${trainer.id}-name`}>
+            <span>{trainer.name}</span>
+            <span>{trainer.chineseName}</span>
+          </h2>
+          <div className="coach-role">
+            <p>{trainer.role} · {trainer.educationSummary}</p>
+            <p>{trainer.roleZh}｜{trainer.educationSummaryZh}</p>
           </div>
-          <div className="coach-copy reveal">
-            <h2 className="display-heading">真正理解你的訓練，<br />從理解你開始。</h2>
-            <p>每個人的生活、身體狀態與目標都不一樣。好的教練不只安排動作，也會傾聽、觀察，陪你找到適合長期前進的方式。</p>
-            <div className="coach-values" aria-label="KILO 教練理念">
-              <span>理解你的起點</span>
-              <span>調整訓練節奏</span>
-              <span>一起穩定前進</span>
-            </div>
-          </div>
+          <p className="coach-introduction">{trainer.intro}</p>
         </div>
+        <figure className="coach-primary-photo reveal-image">
+          <TrainerPhoto
+            image={trainer.images.primary}
+            sizes="(max-width: 640px) 89vw, (max-width: 900px) 58vw, 46vw"
+          />
+          <figcaption><span>01</span> COACHING · MOVEMENT FIRST</figcaption>
+        </figure>
+      </header>
 
-        {site.trainers.length > 0 && (
-          <div className="trainer-list">
-            {site.trainers.map((trainer) => (
-              <article className="trainer" key={trainer.name}>
-                <img src={trainerImageUrl(trainer.image)} alt={trainer.imageAlt} loading="lazy" />
+      <section className="coach-credentials" aria-labelledby={`${trainer.id}-credentials`}>
+        <div className="credential-copy">
+          <div className="coach-section-heading reveal">
+            <p className="eyebrow">EDUCATION &amp; CERTIFICATIONS</p>
+            <h3 id={`${trainer.id}-credentials`}>學歷與專業證照</h3>
+          </div>
+          <div className="credential-list">
+            {trainer.credentials.map((credential, index) => (
+              <article className="credential-item reveal" key={credential.title}>
+                <span>0{index + 1}</span>
                 <div>
-                  <p className="eyebrow">{trainer.role}</p>
-                  <h3>{trainer.name}</h3>
-                  {trainer.englishName && <p className="trainer-english">{trainer.englishName}</p>}
-                  <p>{trainer.bio}</p>
-                  <ul>{trainer.specialties.map((item) => <li key={item}>{item}</li>)}</ul>
+                  <h4>{credential.title}</h4>
+                  <p>{credential.subtitle}</p>
                 </div>
               </article>
             ))}
           </div>
+        </div>
+        <figure className="coach-studio-photo reveal-image">
+          <TrainerPhoto
+            image={trainer.images.studio}
+            sizes="(max-width: 640px) 77vw, (max-width: 900px) 48vw, 32vw"
+          />
+          <figcaption>KILO · SHALU</figcaption>
+        </figure>
+      </section>
+
+      <section className="coach-specialties" aria-labelledby={`${trainer.id}-specialties`}>
+        <div className="specialty-copy">
+          <div className="coach-section-heading reveal">
+            <p className="eyebrow">SPECIALTIES</p>
+            <h3 id={`${trainer.id}-specialties`}>專長</h3>
+          </div>
+          <ol className="specialty-list">
+            {trainer.specialties.map((specialty, index) => (
+              <li className="reveal" key={specialty}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <p>{specialty}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <figure className="coach-secondary-photo reveal-image">
+          <TrainerPhoto
+            image={trainer.images.coaching}
+            sizes="(max-width: 640px) 84vw, (max-width: 900px) 52vw, 35vw"
+          />
+          <figcaption>COACHING · ATTENTION TO DETAIL</figcaption>
+        </figure>
+      </section>
+
+      <figure className="coach-action-photo reveal-image">
+        <TrainerPhoto
+          image={trainer.images.competition}
+          sizes="(max-width: 1400px) 89vw, 1360px"
+        />
+        <figcaption>
+          <span>IN MOTION</span>
+          <p>Training is personal.</p>
+        </figcaption>
+      </figure>
+
+      <section className="coach-experience" aria-labelledby={`${trainer.id}-experience`}>
+        <div className="coach-section-heading reveal">
+          <p className="eyebrow">EXPERIENCE</p>
+          <h3 id={`${trainer.id}-experience`}>教學經歷</h3>
+        </div>
+        <div className="experience-list">
+          {trainer.experience.map((item) => (
+            <article className="experience-item reveal" key={`${item.period}-${item.organization}`}>
+              <p className="experience-period">{item.period}</p>
+              <div>
+                <h4>{item.organization}<span aria-hidden="true">｜</span><small>{item.location}</small></h4>
+                {item.role && <p>{item.role}</p>}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <footer className="coach-cta reveal">
+        <div>
+          <p className="eyebrow">TRAIN WITH {trainer.name.toUpperCase()}</p>
+          <h3><span>想和 {trainer.name}</span> <span>一起訓練？</span></h3>
+          <p>歡迎透過 LINE 了解課程與體驗方式。</p>
+        </div>
+        {site.lineUrl && (
+          <a
+            href={site.lineUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`透過 LINE 預約與 ${trainer.name} 體驗訓練（另開新視窗）`}
+            data-cta={`line-trainer-${trainer.id}`}
+          >
+            LINE 預約體驗 <ArrowIcon />
+          </a>
         )}
+      </footer>
+    </article>
+  );
+}
+
+function Coach() {
+  return (
+    <section className="coach-section light-section" id="coach">
+      <div className="page-shell">
+        <p className="eyebrow coach-section-label reveal">YOUR COACH · 03</p>
+        <div className="trainer-profiles">
+          {site.trainers.map((trainer) => (
+            <TrainerProfile trainer={trainer} key={trainer.id} />
+          ))}
+        </div>
       </div>
     </section>
   );
