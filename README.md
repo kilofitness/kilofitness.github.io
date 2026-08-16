@@ -20,9 +20,9 @@ npm run preview
 
 推送到 `main` 後，[deploy-pages.yml](.github/workflows/deploy-pages.yml) 會自動建置並發布網站。預期公開網址是：
 
-`https://kilofitness.github.io/KiloFitnessWebsite/`
+`https://kilofitness.github.io/`
 
-首次部署時，請在 GitHub repository 的 **Settings → Pages** 將 Source 設為 **GitHub Actions**。若 repository 或帳號名稱改變，請同步更新 `vite.config.ts` 的 `base` 路徑、`src/data/site.ts` 的 `canonicalUrl`，以及 `index.html` 的 canonical／Open Graph 網址。
+首次部署時，請在 GitHub repository 的 **Settings → Pages** 將 Source 設為 **GitHub Actions**。帳號根網址需要 repository 名稱為 `kilofitness.github.io`；若 repository 或帳號名稱改變，請同步更新 `src/data/site.ts` 的 `canonicalUrl` 與 `index.html` 的 canonical／Open Graph 網址。
 
 ## 更新店家與教練資料
 

@@ -18,7 +18,7 @@ export const site = {
   phone: "",
   address: "",
   mapUrl: "",
-  canonicalUrl: "https://kilofitness.github.io/KiloFitnessWebsite/",
+  canonicalUrl: "https://kilofitness.github.io/",
   locationLabel: "台中・沙鹿",
   // TODO: 確認教練姓名、介紹與照片後，依照 Trainer 格式加入；支援多位教練。
   trainers: [] as Trainer[],
