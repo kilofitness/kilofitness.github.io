@@ -186,7 +186,7 @@
   .desktop-nav {
     display: flex;
     align-items: center;
-    gap: clamp(1.5rem, 2.4vw, 3rem);
+    gap: clamp(1.2rem, 2vw, 2.5rem);
   }
 
   .desktop-nav a {
@@ -196,7 +196,7 @@
     letter-spacing: 0.1em;
   }
 
-  .desktop-nav a::after {
+  .desktop-nav a:not(.nav-reservation)::after {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -209,14 +209,55 @@
     transition: transform 240ms ease;
   }
 
-  .desktop-nav a:hover::after,
-  .desktop-nav a:focus-visible::after {
+  .desktop-nav a:not(.nav-reservation):hover::after,
+  .desktop-nav a:not(.nav-reservation):focus-visible::after {
     transform: scaleX(1);
     transform-origin: left;
   }
 
+  .nav-reservation {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 2.6rem;
+    padding: 0.5rem 0.9rem !important;
+    color: var(--champagne);
+    border: 1px solid rgb(201 177 138 / 62%);
+    transition: color 240ms ease, border-color 240ms ease, background-color 240ms ease;
+  }
+
+  .nav-reservation span,
+  .mobile-reservation span {
+    display: inline-block;
+    transition: transform 240ms ease;
+  }
+
+  .nav-reservation:hover {
+    color: var(--ivory);
+    background: rgb(201 177 138 / 8%);
+    border-color: var(--champagne);
+  }
+
+  .site-header:not(.is-solid) .nav-reservation {
+    color: var(--ink);
+    background: var(--ivory);
+    border-color: var(--ivory);
+  }
+
+  .site-header:not(.is-solid) .nav-reservation:hover {
+    color: var(--ink);
+    background: var(--champagne);
+    border-color: var(--champagne);
+  }
+
+  .nav-reservation:hover span,
+  .mobile-reservation:hover span {
+    transform: translate(0.25rem, -0.1rem);
+  }
+
   .menu-toggle,
-  .mobile-menu {
+  .mobile-menu,
+  .mobile-reservation {
     display: none;
   }
 
@@ -303,6 +344,21 @@
     font-size: 0.76rem;
     letter-spacing: 0.1em;
     border-bottom: 1px solid currentcolor;
+    transition: color 240ms ease, border-color 240ms ease;
+  }
+
+  .text-link:hover {
+    color: var(--champagne);
+    border-color: var(--champagne);
+  }
+
+  .text-link-primary {
+    color: var(--champagne);
+  }
+
+  .text-link-primary:hover {
+    color: var(--ivory);
+    border-color: var(--ivory);
   }
 
   .text-link svg,
@@ -563,6 +619,62 @@
     aspect-ratio: 16 / 10;
   }
 
+  .wide-feature img {
+    object-position: center 52%;
+  }
+
+  .amenity-layout {
+    display: grid;
+    grid-template-columns: 0.65fr 1fr;
+    gap: clamp(4rem, 10vw, 11rem);
+    align-items: end;
+    margin-top: clamp(8rem, 14vw, 15rem);
+  }
+
+  .amenity-note {
+    max-width: 28rem;
+    padding-bottom: clamp(2rem, 7vw, 7rem);
+  }
+
+  .amenity-note .eyebrow {
+    margin-bottom: 1.5rem;
+    color: var(--champagne);
+  }
+
+  .amenity-note > p:last-child {
+    color: rgb(241 236 226 / 72%);
+    font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+    line-height: 2.1;
+  }
+
+  .amenity-gallery {
+    display: grid;
+    grid-template-columns: 1fr 0.74fr;
+    gap: clamp(1.5rem, 3vw, 3.5rem);
+    align-items: end;
+    justify-self: end;
+  }
+
+  .amenity-photo {
+    width: 100%;
+  }
+
+  .amenity-photo .photo {
+    aspect-ratio: 4 / 6;
+  }
+
+  .amenity-photo img {
+    object-position: center 54%;
+  }
+
+  .amenity-photo-secondary {
+    margin-bottom: clamp(3rem, 7vw, 7rem);
+  }
+
+  .amenity-photo-secondary img {
+    object-position: center 47%;
+  }
+
   .coach-section {
     padding-block: clamp(7rem, 12vw, 12rem);
   }
@@ -746,7 +858,9 @@
 
   .statement-shade {
     z-index: 1;
-    background: linear-gradient(90deg, rgb(0 0 0 / 66%) 0%, rgb(0 0 0 / 18%) 65%), linear-gradient(0deg, rgb(0 0 0 / 38%), transparent 50%);
+    background:
+      linear-gradient(90deg, rgb(0 0 0 / 82%) 0%, rgb(0 0 0 / 72%) 62%, rgb(0 0 0 / 34%) 100%),
+      linear-gradient(0deg, rgb(0 0 0 / 64%) 0%, transparent 58%, rgb(0 0 0 / 20%) 100%);
   }
 
   .statement-content {
@@ -765,6 +879,7 @@
     font-size: clamp(4.2rem, 9.2vw, 10.5rem);
     line-height: 0.87;
     letter-spacing: -0.06em;
+    text-shadow: 0 0.08em 0.22em rgb(0 0 0 / 42%);
   }
 
   .statement-zh {
@@ -903,31 +1018,34 @@
 
   .primary-contact {
     min-height: 7rem;
+    color: var(--champagne);
     font-family: var(--font-serif);
     font-size: clamp(1.6rem, 2.6vw, 2.7rem);
-    transition: color 200ms ease;
+    border-color: rgb(201 177 138 / 42%);
+    transition: color 240ms ease, border-color 240ms ease;
   }
 
   .primary-contact:hover {
-    color: var(--champagne);
+    color: var(--ivory);
+    border-color: var(--champagne);
   }
 
-  .primary-contact > span {
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
+  .primary-contact-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
   }
 
-  .primary-contact span svg {
-    width: 1.5rem;
-    fill: none;
-    stroke: currentcolor;
-    stroke-width: 1.5;
+  .primary-contact-copy small {
+    font-family: var(--font-sans);
+    font-size: 0.58rem;
+    line-height: 1.4;
+    letter-spacing: 0.18em;
   }
 
-  .primary-contact span svg .fill {
-    fill: currentcolor;
-    stroke: none;
+  .primary-contact-copy strong {
+    font-weight: 400;
   }
 
   .primary-contact > svg {
@@ -936,7 +1054,14 @@
 
   .secondary-contact {
     min-height: 4.5rem;
+    color: rgb(241 236 226 / 68%);
     font-size: 0.85rem;
+    transition: color 240ms ease, border-color 240ms ease;
+  }
+
+  .secondary-contact:hover {
+    color: var(--ivory);
+    border-color: rgb(241 236 226 / 42%);
   }
 
   .footer {
@@ -1037,6 +1162,43 @@
 
     .site-header.is-solid {
       backdrop-filter: none;
+    }
+
+    .mobile-reservation {
+      position: relative;
+      z-index: 102;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-height: 2.75rem;
+      margin-left: auto;
+      margin-right: 0.65rem;
+      padding-inline: 0.7rem;
+      color: var(--champagne);
+      background: transparent;
+      border: 1px solid rgb(201 177 138 / 62%);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      transition: color 240ms ease, border-color 240ms ease, background-color 240ms ease;
+    }
+
+    .mobile-reservation:hover {
+      color: var(--ivory);
+      background: rgb(201 177 138 / 8%);
+      border-color: var(--champagne);
+    }
+
+    .site-header:not(.is-solid) .mobile-reservation {
+      color: var(--ink);
+      background: var(--ivory);
+      border-color: var(--ivory);
+    }
+
+    .site-header:not(.is-solid) .mobile-reservation:hover {
+      color: var(--ink);
+      background: var(--champagne);
+      border-color: var(--champagne);
     }
 
     .menu-toggle {
@@ -1286,6 +1448,7 @@
     }
 
     .hero-actions {
+      flex-wrap: wrap;
       gap: 1.4rem;
       margin-top: 1.5rem;
     }
@@ -1405,7 +1568,41 @@
     }
 
     .wide-feature img {
-      object-position: 51% center;
+      object-position: 48% center;
+    }
+
+    .amenity-layout {
+      grid-template-columns: 1fr;
+      gap: 3.5rem;
+      margin-top: 7rem;
+    }
+
+    .amenity-note {
+      max-width: 19rem;
+      padding-bottom: 0;
+    }
+
+    .amenity-gallery {
+      grid-template-columns: 1fr 0.78fr;
+      gap: 0.9rem;
+      width: 88vw;
+    }
+
+    .amenity-photo img {
+      object-position: center 55%;
+    }
+
+    .amenity-photo-secondary {
+      margin-bottom: 3rem;
+    }
+
+    .amenity-photo-secondary img {
+      object-position: center 46%;
+    }
+
+    .amenity-photo figcaption {
+      padding-inline: 0.25rem;
+      line-height: 1.5;
     }
 
     .coach-section > .page-shell > .eyebrow {
@@ -1469,7 +1666,9 @@
     }
 
     .statement-shade {
-      background: linear-gradient(90deg, rgb(0 0 0 / 67%), rgb(0 0 0 / 15%)), linear-gradient(0deg, rgb(0 0 0 / 45%), transparent 60%);
+      background:
+        linear-gradient(90deg, rgb(0 0 0 / 80%) 0%, rgb(0 0 0 / 68%) 76%, rgb(0 0 0 / 38%) 100%),
+        linear-gradient(0deg, rgb(0 0 0 / 68%) 0%, transparent 62%, rgb(0 0 0 / 24%) 100%);
     }
 
     .statement-en {

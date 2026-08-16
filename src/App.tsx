@@ -64,16 +64,6 @@ function ArrowIcon() {
   );
 }
 
-function InstagramIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle className="fill" cx="17.4" cy="6.7" r="1" />
-    </svg>
-  );
-}
-
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -118,7 +108,27 @@ function Header() {
         {navigation.map((item) => (
           <a key={item.href} href={item.href}>{item.label}</a>
         ))}
+        <a
+          className="nav-reservation"
+          href={site.lineUrl}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="透過 LINE 預約體驗（另開新視窗）"
+          data-cta="line-nav"
+        >
+          預約體驗 <span aria-hidden="true">↗</span>
+        </a>
       </nav>
+      <a
+        className="mobile-reservation"
+        href={site.lineUrl}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="透過 LINE 預約體驗（另開新視窗）"
+        data-cta="line-nav"
+      >
+        預約體驗 <span aria-hidden="true">↗</span>
+      </a>
       <button
         ref={menuButtonRef}
         className="menu-toggle"
@@ -174,8 +184,15 @@ function Hero() {
           </div>
           <div className="hero-actions">
             <a className="text-link text-link-light" href="#about">認識 KILO <ArrowIcon /></a>
-            <a className="text-link text-link-light" href={site.instagram} target="_blank" rel="noreferrer">
-              Instagram <ArrowIcon />
+            <a
+              className="text-link text-link-primary"
+              href={site.lineUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="透過 LINE 預約體驗（另開新視窗）"
+              data-cta="line-hero"
+            >
+              LINE 預約體驗 <ArrowIcon />
             </a>
           </div>
         </div>
@@ -255,9 +272,26 @@ function Space() {
           <figcaption><span>03</span> DETAILS THAT MATTER</figcaption>
         </figure>
         <figure className="wide-feature reveal-image">
-          <Photo name="training-space" alt="KILO Fitness 完整訓練空間與黑色專業訓練設備" width={7008} height={3944} preferJpeg />
+          <Photo name="space-sign" alt="KILO Fitness 暖色燈光下的發光招牌與訓練設備細節" width={7008} height={3944} preferJpeg />
           <figcaption><span>04</span> BUILT FOR FOCUS</figcaption>
         </figure>
+      </div>
+
+      <div className="page-shell amenity-layout">
+        <div className="amenity-note reveal">
+          <p className="eyebrow">DETAILS · BEYOND TRAINING</p>
+          <p>從訓練設備到盥洗空間，<br />每一處細節都維持同樣的用心。</p>
+        </div>
+        <div className="amenity-gallery">
+          <figure className="amenity-photo reveal-image">
+            <Photo name="amenities-sink" alt="KILO Fitness 盥洗空間的洗手台與暖色鏡面燈光" width={3944} height={7008} />
+            <figcaption><span>05</span> AMENITIES</figcaption>
+          </figure>
+          <figure className="amenity-photo amenity-photo-secondary reveal-image">
+            <Photo name="amenities-toilet" alt="KILO Fitness 盥洗空間內的洗手間與暖色線性照明" width={3944} height={7008} />
+            <figcaption>RESTROOM</figcaption>
+          </figure>
+        </div>
       </div>
     </section>
   );
@@ -386,12 +420,31 @@ function Contact() {
             </div>
           </div>
           <div className="contact-actions reveal">
-            <a className="primary-contact" href={site.instagram} target="_blank" rel="noreferrer">
-              <span><InstagramIcon />Instagram 私訊</span><ArrowIcon />
-            </a>
             {site.lineUrl && (
-              <a className="secondary-contact" href={site.lineUrl} target="_blank" rel="noreferrer">LINE 諮詢 <ArrowIcon /></a>
+              <a
+                className="primary-contact"
+                href={site.lineUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="透過 LINE 預約體驗（另開新視窗）"
+                data-cta="line-contact"
+              >
+                <span className="primary-contact-copy">
+                  <small>課程諮詢・體驗預約</small>
+                  <strong>LINE 預約體驗</strong>
+                </span>
+                <ArrowIcon />
+              </a>
             )}
+            <a
+              className="secondary-contact"
+              href={site.instagram}
+              target="_blank"
+              rel="noreferrer"
+              data-cta="instagram-contact"
+            >
+              Instagram 私訊 <ArrowIcon />
+            </a>
             {site.phone && (
               <a className="secondary-contact" href={`tel:${site.phone}`}>電話聯絡 <ArrowIcon /></a>
             )}
