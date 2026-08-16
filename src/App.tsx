@@ -56,6 +56,29 @@ function Photo({ name, alt, width, height, className = "", eager = false, prefer
   );
 }
 
+function HeroMedia() {
+  return (
+    <picture className="photo hero-photo">
+      <source
+        media="(max-width: 900px) and (orientation: portrait)"
+        srcSet={`${imageUrl("rack-portrait-1000.jpg")} 1000w, ${imageUrl("rack-portrait-1600.jpg")} 1600w`}
+        sizes="100vw"
+      />
+      <img
+        src={imageUrl("training-space-1600.jpg")}
+        srcSet={`${imageUrl("training-space-1000.jpg")} 1000w, ${imageUrl("training-space-1600.jpg")} 1600w`}
+        sizes="100vw"
+        alt="KILO Fitness 沙鹿私人訓練空間與重訓設備"
+        width={7008}
+        height={3944}
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
+      />
+    </picture>
+  );
+}
+
 function ArrowIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -164,15 +187,7 @@ function Header() {
 function Hero() {
   return (
     <section className="hero" id="top" aria-label="KILO Fitness 首頁">
-      <Photo
-        name="kilo-exterior"
-        alt="夜晚的 KILO Fitness 店面，燈光映照出訓練空間與 KILO 招牌"
-        width={3944}
-        height={7008}
-        className="hero-photo"
-        eager
-        preferJpeg
-      />
+      <HeroMedia />
       <div className="hero-shade" />
       <div className="hero-content page-shell">
         <p className="eyebrow reveal">KILO FITNESS · SHALU</p>
@@ -257,8 +272,8 @@ function Space() {
 
       <div className="page-shell editorial-pair">
         <figure className="portrait-feature reveal-image">
-          <Photo name="rack-portrait" alt="暖色燈光下的 KILO 重量訓練架與訓練椅" width={3944} height={7008} />
-          <figcaption><span>02</span> STRENGTH &amp; CONTROL</figcaption>
+          <Photo name="kilo-exterior" alt="夜晚的 KILO Fitness 店面入口與室內訓練設備" width={3944} height={7008} />
+          <figcaption><span>02</span> ARRIVAL · KILO AT NIGHT</figcaption>
         </figure>
         <div className="editorial-note reveal">
           <span className="large-index">K</span>

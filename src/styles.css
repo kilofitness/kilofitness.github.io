@@ -275,15 +275,16 @@
   }
 
   .hero-photo img {
-    object-position: 50% 47%;
+    object-position: center 54%;
     transform: scale(1.003);
   }
 
   .hero-shade {
     z-index: 1;
     background:
-      linear-gradient(90deg, rgb(0 0 0 / 58%) 0%, rgb(0 0 0 / 20%) 48%, rgb(0 0 0 / 8%) 72%),
-      linear-gradient(0deg, rgb(0 0 0 / 60%) 0%, transparent 48%, rgb(0 0 0 / 22%) 100%);
+      linear-gradient(90deg, rgb(0 0 0 / 68%) 0%, rgb(0 0 0 / 42%) 40%, rgb(0 0 0 / 14%) 72%, rgb(0 0 0 / 5%) 100%),
+      linear-gradient(0deg, rgb(0 0 0 / 72%) 0%, rgb(0 0 0 / 10%) 57%, rgb(0 0 0 / 20%) 100%),
+      linear-gradient(180deg, rgb(0 0 0 / 48%) 0%, transparent 23%);
   }
 
   .hero-content {
@@ -293,7 +294,7 @@
     flex-direction: column;
     justify-content: flex-end;
     min-height: 100svh;
-    padding-block: 9rem 7.5rem;
+    padding-block: 8rem clamp(5.25rem, 8vh, 7rem);
   }
 
   .hero .eyebrow {
@@ -301,7 +302,7 @@
   }
 
   .hero h1 {
-    max-width: 11ch;
+    max-width: 8em;
     font-family: var(--font-serif);
     font-size: clamp(4rem, 7vw, 8.2rem);
     font-weight: 400;
@@ -1390,6 +1391,32 @@
     }
   }
 
+  @media (max-width: 900px) and (orientation: portrait) {
+    .hero-photo img {
+      object-position: center center;
+    }
+
+    .hero-shade {
+      background:
+        linear-gradient(0deg, rgb(0 0 0 / 80%) 0%, rgb(0 0 0 / 48%) 42%, rgb(0 0 0 / 7%) 70%, rgb(0 0 0 / 24%) 100%),
+        linear-gradient(90deg, rgb(0 0 0 / 28%) 0%, rgb(0 0 0 / 5%) 72%);
+    }
+
+    .hero-content {
+      padding-bottom: clamp(4.75rem, 8vh, 6.5rem);
+    }
+
+    .hero h1 {
+      max-width: 100%;
+      font-size: clamp(3.8rem, 9vw, 5rem);
+      line-height: 1;
+    }
+
+    .hero-meta {
+      margin-top: 2.5rem;
+    }
+  }
+
   @media (max-width: 640px) {
     :root {
       --shell: 88.5vw;
@@ -1417,18 +1444,18 @@
     }
 
     .hero-photo img {
-      object-position: center 48%;
+      object-position: center center;
     }
 
     .hero-shade {
       background:
-        linear-gradient(0deg, rgb(0 0 0 / 74%) 0%, rgb(0 0 0 / 5%) 58%, rgb(0 0 0 / 32%) 100%),
-        linear-gradient(90deg, rgb(0 0 0 / 26%), transparent 70%);
+        linear-gradient(0deg, rgb(0 0 0 / 84%) 0%, rgb(0 0 0 / 54%) 41%, rgb(0 0 0 / 7%) 70%, rgb(0 0 0 / 25%) 100%),
+        linear-gradient(90deg, rgb(0 0 0 / 30%) 0%, rgb(0 0 0 / 4%) 75%);
     }
 
     .hero-content {
       min-height: max(43rem, 100svh);
-      padding-block: 7rem 5.5rem;
+      padding-block: 6.75rem 3.5rem;
     }
 
     .hero .eyebrow {
@@ -1436,9 +1463,9 @@
     }
 
     .hero h1 {
-      max-width: 9ch;
-      font-size: clamp(3.25rem, 15vw, 5rem);
-      line-height: 1.02;
+      max-width: 100%;
+      font-size: clamp(2.85rem, 12vw, 3.55rem);
+      line-height: 0.98;
     }
 
     .hero-meta {
