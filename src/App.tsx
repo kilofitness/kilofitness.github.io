@@ -25,19 +25,25 @@ const socialLinks = [
   { label: "Facebook", href: site.facebook },
 ];
 
+const imageUrl = (filename: string) => `${import.meta.env.BASE_URL}images/${filename}`;
+const trainerImageUrl = (image: string) => {
+  if (/^https?:\/\//.test(image)) return image;
+  return imageUrl(image.replace(/^\/images\//, ""));
+};
+
 function Photo({ name, alt, width, height, className = "", eager = false, preferJpeg = false }: PhotoProps) {
   return (
     <picture className={`photo ${className}`}>
       {!preferJpeg && (
         <source
           type="image/avif"
-          srcSet={`/images/${name}-1200.avif 1200w`}
+          srcSet={`${imageUrl(`${name}-1200.avif`)} 1200w`}
           sizes="(max-width: 767px) 100vw, (max-width: 1400px) 85vw, 1400px"
         />
       )}
       <img
-        src={`/images/${name}-1600.jpg`}
-        srcSet={`/images/${name}-1000.jpg 1000w, /images/${name}-1600.jpg 1600w`}
+        src={imageUrl(`${name}-1600.jpg`)}
+        srcSet={`${imageUrl(`${name}-1000.jpg`)} 1000w, ${imageUrl(`${name}-1600.jpg`)} 1600w`}
         sizes="(max-width: 767px) 100vw, (max-width: 1400px) 85vw, 1400px"
         alt={alt}
         width={width}
@@ -282,7 +288,7 @@ function Coach() {
           <div className="trainer-list">
             {site.trainers.map((trainer) => (
               <article className="trainer" key={trainer.name}>
-                <img src={trainer.image} alt={trainer.imageAlt} loading="lazy" />
+                <img src={trainerImageUrl(trainer.image)} alt={trainer.imageAlt} loading="lazy" />
                 <div>
                   <p className="eyebrow">{trainer.role}</p>
                   <h3>{trainer.name}</h3>
@@ -446,7 +452,9 @@ function App() {
       name: site.name,
       alternateName: site.chineseName,
       sameAs: socialLinks.map((social) => social.href),
-      image: "/images/kilo-exterior-1600.jpg",
+      image: site.canonicalUrl
+        ? new URL(imageUrl("kilo-exterior-1600.jpg"), site.canonicalUrl).href
+        : imageUrl("kilo-exterior-1600.jpg"),
     };
     if (site.address) schema.address = site.address;
     if (site.phone) schema.telephone = site.phone;
@@ -458,16 +466,20 @@ function App() {
 
     let canonical: HTMLLinkElement | null = null;
     if (site.canonicalUrl) {
-      canonical = document.createElement("link");
-      canonical.rel = "canonical";
-      canonical.href = site.canonicalUrl;
-      document.head.appendChild(canonical);
+      canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        canonical.href = site.canonicalUrl;
+        canonical.dataset.runtime = "true";
+        document.head.appendChild(canonical);
+      }
     }
 
     return () => {
       observer.disconnect();
       script.remove();
-      canonical?.remove();
+      if (canonical?.dataset.runtime === "true") canonical.remove();
       document.documentElement.classList.remove("js-ready");
     };
   }, []);
