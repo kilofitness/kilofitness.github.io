@@ -139,11 +139,11 @@ const trainers = [
         jpegWidths: [640, 1000, 1600],
       },
       coaching: {
-        name: "jessica-coaching-pullup",
-        alt: "教練 Jessica 指導學員進行引體向上訓練",
-        width: 1179,
-        height: 2091,
-        jpegWidths: [640, 800, 1179],
+        name: "jessica-specialties",
+        alt: "教練 Jessica 協助學員進行伸展與動作調整",
+        width: 3944,
+        height: 7008,
+        jpegWidths: [640, 1000, 1600],
       },
       action: {
         name: "jessica-competition",
