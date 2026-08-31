@@ -21,6 +21,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Check out the live site
+        uses: actions/checkout@v4
+        with:
+          ref: live
+          path: live-site
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -30,8 +36,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build website
-        run: npm run build:pages
+      - name: Build redesigned site at /v2/
+        run: npm run build:pages-v2
+
+      - name: Build live site at /
+        working-directory: live-site
+        run: |
+          npm ci
+          npm run build:pages
+
+      - name: Assemble both website versions
+        run: |
+          mkdir -p pages/v2
+          cp -R live-site/dist/. pages/
+          cp -R dist/. pages/v2/
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -39,7 +57,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./pages
 
   deploy:
     environment:

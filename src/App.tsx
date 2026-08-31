@@ -4,6 +4,7 @@ import { ResilientImage } from "./components/ResilientImage";
 import type { ResponsiveImageSource } from "./components/ResilientImage";
 import { site } from "./data/site";
 import type { Trainer, TrainerImage } from "./data/site";
+import { initialiseAnalytics, trackCta, trackEvent } from "./utils/analytics";
 
 type PhotoProps = {
   name: string;
@@ -16,11 +17,11 @@ type PhotoProps = {
 };
 
 const navigation = [
-  { label: "關於 KILO", href: "#about" },
-  { label: "空間", href: "#space" },
+  { label: "一對一訓練", href: "#one-on-one" },
+  { label: "適合誰", href: "#for-you" },
   { label: "教練", href: "#coach" },
-  { label: "訓練", href: "#training" },
-  { label: "聯絡我們", href: "#contact" },
+  { label: "空間", href: "#space" },
+  { label: "常見問題", href: "#faq" },
 ];
 
 const socialLinks = [
@@ -298,6 +299,7 @@ function Header() {
           rel="noreferrer"
           aria-label="透過 LINE 預約體驗（另開新視窗）"
           data-cta="line-nav"
+          onClick={() => trackCta("nav")}
         >
           預約體驗 <span aria-hidden="true">↗</span>
         </a>
@@ -309,6 +311,7 @@ function Header() {
         rel="noreferrer"
         aria-label="透過 LINE 預約體驗（另開新視窗）"
         data-cta="line-nav"
+        onClick={() => trackCta("mobile-nav")}
       >
         預約體驗 <span aria-hidden="true">↗</span>
       </a>
@@ -350,15 +353,20 @@ function Hero() {
       <HeroMedia />
       <div className="hero-shade" />
       <div className="hero-content page-shell">
-        <p className="eyebrow reveal">KILO FITNESS · SHALU</p>
-        <h1 className="reveal reveal-delay-1">你的進步，<br />按照你的節奏。</h1>
+        <p className="eyebrow reveal">{site.positioning.eyebrow}</p>
+        <h1 className="reveal reveal-delay-1">{site.positioning.title}</h1>
+        <div className="hero-service-copy reveal reveal-delay-1">
+          <p>{site.positioning.headline}</p>
+          <small>{site.positioning.services}</small>
+          <strong>{site.positioning.brandLine}</strong>
+        </div>
         <div className="hero-meta reveal reveal-delay-2">
           <div>
-            <p>Fitness · Support · Community</p>
-            <p>運動・陪伴・社群</p>
+            <p>{site.locationLabel}</p>
+            <p>課程諮詢 · 體驗預約</p>
           </div>
           <div className="hero-actions">
-            <a className="text-link text-link-light" href="#about">認識 KILO <ArrowIcon /></a>
+            <a className="text-link text-link-light" href="#one-on-one">認識 KILO <ArrowIcon /></a>
             <a
               className="text-link text-link-primary"
               href={site.lineUrl}
@@ -366,49 +374,107 @@ function Hero() {
               rel="noreferrer"
               aria-label="透過 LINE 預約體驗（另開新視窗）"
               data-cta="line-hero"
+              onClick={() => trackCta("hero")}
             >
               LINE 預約體驗 <ArrowIcon />
             </a>
           </div>
         </div>
       </div>
-      <a className="scroll-cue" href="#about" aria-label="向下瀏覽">
+      <a className="scroll-cue" href="#one-on-one" aria-label="向下瀏覽">
         <span>SCROLL</span><i />
       </a>
     </section>
   );
 }
 
-const pillars = [
-  { en: "FITNESS", zh: "運動", text: "專注於有效、安全且適合個人的訓練。" },
-  { en: "SUPPORT", zh: "陪伴", text: "讓習慣更容易養成，陪你把運動變成生活的一部分，變得更健康、更有力量。" },
-  { en: "COMMUNITY", zh: "社群", text: "讓健身不只是一堂課，而是一段有人一起走的過程。" },
-];
-
-function Manifesto() {
+function ValueStrip() {
   return (
-    <section className="manifesto light-section" id="about">
+    <section className="value-strip" aria-label="KILO Fitness 特色">
       <div className="page-shell">
-        <div className="section-intro">
-          <p className="eyebrow reveal">ABOUT KILO · 01</p>
-          <div className="intro-grid">
-            <h2 className="display-heading reveal">不只是訓練。<br />我們想陪你<br />走得更久。</h2>
-            <div className="intro-copy reveal">
-              <p>KILO 相信，真正有價值的訓練，不只是今天多舉起幾公斤，而是讓你在往後的生活裡，擁有更多力量、更多選擇。</p>
-              <p className="brand-thought">你的肌肉量，決定你往後生活的質量。</p>
-            </div>
+        <ul>
+          {site.valueStrip.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+function OneOnOne() {
+  return (
+    <section className="one-on-one light-section" id="one-on-one">
+      <div className="page-shell">
+        <div className="conversion-heading">
+          <p className="eyebrow reveal">ONE-ON-ONE · 01</p>
+          <div>
+            <h2 className="display-heading reveal">一對一，不只是有人<br />站在旁邊陪你練。</h2>
+            <p className="reveal">從訓練內容、動作細節到每一天的身體狀態，教練都能依照你真正需要的方向進行調整。</p>
           </div>
         </div>
-        <div className="pillars">
-          {pillars.map((pillar, index) => (
-            <article className="pillar reveal" key={pillar.en}>
-              <span className="pillar-number">0{index + 1}</span>
-              <p className="pillar-en">{pillar.en}</p>
-              <h3>{pillar.zh}</h3>
-              <p>{pillar.text}</p>
+        <div className="value-prop-grid">
+          {site.valueProps.map((item, index) => (
+            <article className="value-prop reveal" key={item.title}>
+              <span>0{index + 1}</span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
             </article>
           ))}
         </div>
+        <a className="section-cta" href={site.lineUrl} target="_blank" rel="noreferrer" data-cta="line-one-on-one" onClick={() => trackCta("one-on-one")}>
+          LINE 了解一對一訓練 <ArrowIcon />
+        </a>
+      </div>
+    </section>
+  );
+}
+
+function Audiences() {
+  return (
+    <section className="audiences dark-section" id="for-you">
+      <div className="page-shell">
+        <div className="conversion-heading audience-heading">
+          <p className="eyebrow reveal">FOR YOU · 02</p>
+          <div>
+            <h2 className="display-heading reveal">從你的目標開始。</h2>
+            <p className="reveal">不論你正要開始、想找回規律，或想把訓練做得更好，KILO 都從你現在的狀態出發。</p>
+          </div>
+        </div>
+        <div className="audience-list">
+          {site.audiences.map((audience, index) => (
+            <article className="audience-item reveal" key={audience.title}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{audience.title}</h3>
+              <p>{audience.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FirstExperience() {
+  return (
+    <section className="first-experience light-section" id="first-visit">
+      <div className="page-shell">
+        <div className="conversion-heading">
+          <p className="eyebrow reveal">START HERE · 03</p>
+          <div>
+            <h2 className="display-heading reveal">第一次來 KILO，<br />很簡單。</h2>
+            <p className="reveal">先聊聊你的目標，再一起找到適合你的訓練安排。</p>
+          </div>
+        </div>
+        <ol className="first-steps">
+          {site.firstVisitSteps.map((step, index) => (
+            <li className="reveal" key={step.title}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><h3>{step.title}</h3><p>{step.text}</p></div>
+            </li>
+          ))}
+        </ol>
+        <a className="section-cta" href={site.lineUrl} target="_blank" rel="noreferrer" data-cta="line-first-visit" onClick={() => trackCta("first-visit")}>
+          LINE 預約體驗 <ArrowIcon />
+        </a>
       </div>
     </section>
   );
@@ -418,10 +484,10 @@ function Space() {
   return (
     <section className="space-section dark-section" id="space">
       <div className="page-shell space-heading">
-        <p className="eyebrow reveal">THE SPACE · 02</p>
+        <p className="eyebrow reveal">THE SPACE</p>
         <div className="space-title-row">
-          <h2 className="display-heading reveal">專注訓練的<br />一方空間。</h2>
-          <p className="space-lead reveal">沒有擁擠的人潮。<br />沒有多餘的干擾。<br />留下真正需要的設備，<br />以及專注於自己的時間。</p>
+          <h2 className="display-heading reveal">專注在你身上的<br />一方空間。</h2>
+          <p className="space-lead reveal">少一點干擾，<br />多一點真正放在訓練上的注意力。<br />讓你能專注於每一次動作，<br />以及自己的目標。</p>
         </div>
       </div>
 
@@ -476,7 +542,6 @@ function TrainerProfile({ trainer }: { trainer: Trainer }) {
   return (
     <article
       className="coach-profile"
-      id={`coach-${trainer.id}`}
       data-trainer={trainer.id}
       aria-labelledby={`${trainer.id}-name`}
     >
@@ -617,6 +682,7 @@ function TrainerProfile({ trainer }: { trainer: Trainer }) {
             rel="noreferrer"
             aria-label={`透過 LINE 預約與 ${trainer.name} 體驗訓練（另開新視窗）`}
             data-cta={`line-trainer-${trainer.id}`}
+            onClick={() => trackCta(`trainer-${trainer.id}`)}
           >
             LINE 預約體驗 <ArrowIcon />
           </a>
@@ -636,7 +702,15 @@ function CoachDirectory() {
       </div>
       <nav className="coach-directory-list" aria-label="選擇教練">
         {site.trainers.map((trainer, index) => (
-          <a className="coach-directory-item reveal" href={`#coach-${trainer.id}`} key={trainer.id}>
+          <a
+            className="coach-directory-item reveal"
+            href={`#coach-${trainer.id}`}
+            key={trainer.id}
+            onClick={() => {
+              document.getElementById(`coach-${trainer.id}`)?.setAttribute("open", "");
+              trackEvent("coach_profile_open", { trainer: trainer.id });
+            }}
+          >
             <figure>
               <TrainerPhoto
                 image={trainer.images.primary}
@@ -669,7 +743,10 @@ function Coach() {
         <CoachDirectory />
         <div className="trainer-profiles">
           {site.trainers.map((trainer) => (
-            <TrainerProfile trainer={trainer} key={trainer.id} />
+            <details className="coach-full-profile" id={`coach-${trainer.id}`} key={trainer.id}>
+              <summary>查看完整教練介紹 <ArrowIcon /></summary>
+              <TrainerProfile trainer={trainer} />
+            </details>
           ))}
         </div>
       </div>
@@ -744,6 +821,31 @@ function Training() {
   );
 }
 
+function Trial() {
+  const { trialSession } = site;
+  if (!trialSession.enabled) return null;
+
+  return (
+    <section className="trial-section light-section" id="trial">
+      <div className="page-shell trial-grid">
+        <div>
+          <p className="eyebrow reveal">FIRST SESSION</p>
+          <h2 className="display-heading reveal">從一次體驗開始。</h2>
+        </div>
+        <div className="trial-copy reveal">
+          {trialSession.price ? <p className="trial-price">一對一體驗 NT${trialSession.price.toLocaleString("zh-TW")}</p> : <p className="trial-lead">想了解目前體驗方案與課程安排？歡迎直接透過 LINE 詢問。</p>}
+          {trialSession.durationMinutes && <p>約 {trialSession.durationMinutes} 分鐘</p>}
+          {trialSession.description && <p>{trialSession.description}</p>}
+          {trialSession.includes && <ul>{trialSession.includes.map((item) => <li key={item}>{item}</li>)}</ul>}
+          <a className="section-cta" href={site.lineUrl} target="_blank" rel="noreferrer" data-cta="line-trial" onClick={() => trackCta("trial")}>
+            LINE 詢問體驗方案 <ArrowIcon />
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function BrandStatement() {
   return (
     <section className="brand-statement" aria-label="KILO 品牌宣言">
@@ -762,11 +864,11 @@ function WhyKilo() {
     <section className="why-section light-section" id="why-kilo">
       <div className="page-shell why-grid">
         <div className="why-copy">
-          <p className="eyebrow reveal">WHY KILO · 05</p>
-          <h2 className="display-heading reveal">為什麼是<br />KILO？</h2>
+          <p className="eyebrow reveal">WHY KILO</p>
+          <h2 className="display-heading reveal">不只是今天<br />多舉幾公斤。</h2>
           <div className="why-body reveal">
-            <p>KILO 以「運動・陪伴・社群」為核心。訓練不是一段需要獨自完成的路，而是有人理解你的目標、尊重你的節奏，和你一起把改變留在生活裡。</p>
-            <p>我們在意的不只是重量，也在意你能不能自在地持續。因為真正重要的進步，從來不是一時衝刺，而是每一次願意再往前一點。</p>
+            <p>KILO 在意的不只是一次訓練完成了多少，而是你能不能逐步建立一個真正適合自己、也願意持續下去的方式。</p>
+            <p>從動作、強度到訓練進度，教練依照你的狀態安排，讓進步能真正回到日常生活。</p>
           </div>
           <p className="why-signature reveal">Fitness · Support · Community</p>
         </div>
@@ -779,18 +881,70 @@ function WhyKilo() {
   );
 }
 
+function LocalInfo() {
+  return (
+    <section className="local-info light-section" id="location">
+      <div className="page-shell local-grid">
+        <div>
+          <p className="eyebrow reveal">KILO · SHALU</p>
+          <h2 className="display-heading reveal">在沙鹿，<br />開始你的訓練。</h2>
+        </div>
+        <div className="local-details reveal">
+          <p className="local-label">LOCATION · 台中沙鹿</p>
+          <address>{site.address}</address>
+          <a className="local-phone" href={`tel:${site.phone}`}>{site.phoneDisplay}</a>
+          {site.nearbyLandmark && <p className="local-extra">鄰近 {site.nearbyLandmark}</p>}
+          {site.businessHours && (
+            <dl className="local-hours">
+              {site.businessHours.map((item) => <div key={item.days}><dt>{item.days}</dt><dd>{item.hours}</dd></div>)}
+            </dl>
+          )}
+          {site.parking && <p className="local-extra">{[site.parking.car, site.parking.scooter].filter(Boolean).join(" · ")}</p>}
+          <div className="local-actions">
+            <a className="section-cta section-cta-dark" href={site.mapUrl} target="_blank" rel="noreferrer" data-cta="maps-location" onClick={() => trackEvent("google_maps_click", { placement: "location" })}>Google Maps 導航 <ArrowIcon /></a>
+            <a className="text-link" href={site.lineUrl} target="_blank" rel="noreferrer" data-cta="line-location" onClick={() => trackCta("location")}>LINE 預約體驗 <ArrowIcon /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQ() {
+  return (
+    <section className="faq-section dark-section" id="faq">
+      <div className="page-shell faq-grid">
+        <div>
+          <p className="eyebrow reveal">FAQ</p>
+          <h2 className="display-heading reveal">常見問題。</h2>
+        </div>
+        <div className="faq-list">
+          {site.faqs.map((faq) => (
+            <details className="reveal" key={faq.question} onToggle={(event) => {
+              if (event.currentTarget.open) trackEvent("faq_open", { question: faq.question });
+            }}>
+              <summary>{faq.question}<span aria-hidden="true">+</span></summary>
+              <p>{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Contact() {
   return (
     <section className="contact-section dark-section" id="contact">
       <div className="page-shell">
         <div className="contact-top reveal">
-          <p className="eyebrow">START HERE · 06</p>
+          <p className="eyebrow">START WITH KILO</p>
           <p className="contact-location">{site.locationLabel}</p>
         </div>
-        <h2 className="display-heading reveal">準備開始了嗎？</h2>
+        <h2 className="display-heading reveal">找到真正適合你的<br />訓練方式。</h2>
         <div className="contact-bottom">
           <div className="contact-copy reveal">
-            <p>想了解課程、教練或訓練方式，<br />歡迎直接和 KILO 聊聊。</p>
+            <p>不確定自己該從哪裡開始也沒關係。<br />先透過 LINE 告訴我們你的目標，<br />我們一起找到適合你的方向。</p>
             <p className="business-name">{site.chineseName}</p>
             <div className="contact-socials" aria-label="追蹤 KILO">
               <span>FOLLOW KILO</span>
@@ -808,6 +962,7 @@ function Contact() {
                 rel="noreferrer"
                 aria-label="透過 LINE 預約體驗（另開新視窗）"
                 data-cta="line-contact"
+                onClick={() => trackCta("final")}
               >
                 <span className="primary-contact-copy">
                   <small>課程諮詢・體驗預約</small>
@@ -818,13 +973,14 @@ function Contact() {
             )}
             <a
               className="secondary-contact"
-              href={site.instagram}
+              href={site.mapUrl}
               target="_blank"
               rel="noreferrer"
-              data-cta="instagram-contact"
-              aria-label="在 Instagram 關注 KILO（另開新視窗）"
+              data-cta="maps-contact"
+              aria-label="在 Google Maps 查看 KILO（另開新視窗）"
+              onClick={() => trackEvent("google_maps_click", { placement: "final" })}
             >
-              Instagram 關注 KILO <ArrowIcon />
+              Google Maps 查看位置 <ArrowIcon />
             </a>
             {site.phone && (
               <a className="secondary-contact" href={`tel:${site.phone}`}>電話聯絡 <ArrowIcon /></a>
@@ -861,6 +1017,7 @@ function Footer() {
                     rel="noreferrer"
                     aria-label="在 Google Maps 查看 KILO Fitness 地址（另開新視窗）"
                     data-cta="directions-footer"
+                    onClick={() => trackEvent("google_maps_click", { placement: "footer" })}
                   >
                     <span>{site.address}</span>
                     <span aria-hidden="true">↗</span>
@@ -899,8 +1056,25 @@ function Footer() {
   );
 }
 
+function MobileBookingBar() {
+  return (
+    <a
+      className="mobile-booking-bar"
+      href={site.lineUrl}
+      target="_blank"
+      rel="noreferrer"
+      data-cta="line-mobile-sticky"
+      aria-label="透過 LINE 預約一對一體驗（另開新視窗）"
+      onClick={() => trackCta("mobile-sticky")}
+    >
+      LINE 預約體驗 <ArrowIcon />
+    </a>
+  );
+}
+
 function App() {
   useEffect(() => {
+    initialiseAnalytics();
     document.documentElement.classList.add("js-ready");
     const nodes = document.querySelectorAll<HTMLElement>(".reveal, .reveal-image");
     const observer = new IntersectionObserver(
@@ -926,9 +1100,34 @@ function App() {
         ? new URL(imageUrl("kilo-exterior-1600.jpg"), site.canonicalUrl).href
         : imageUrl("kilo-exterior-1600.jpg"),
     };
-    if (site.address) schema.address = site.address;
+    if (site.address) {
+      schema.address = {
+        "@type": "PostalAddress",
+        postalCode: "433",
+        addressRegion: "台中市",
+        addressLocality: "沙鹿區",
+        streetAddress: "台灣大道七段303巷7號",
+        addressCountry: "TW",
+      };
+    }
     if (site.phone) schema.telephone = site.phone;
     if (site.canonicalUrl) schema.url = site.canonicalUrl;
+    if (site.mapUrl) schema.hasMap = site.mapUrl;
+    const openingHours = site.businessHours?.flatMap((item) => (
+      item.schemaDays && item.opens && item.closes
+        ? [{ "@type": "OpeningHoursSpecification", dayOfWeek: item.schemaDays, opens: item.opens, closes: item.closes }]
+        : []
+    ));
+    if (openingHours?.length) {
+      schema.openingHoursSpecification = openingHours;
+    }
+    if (site.googleRating) {
+      schema.aggregateRating = {
+        "@type": "AggregateRating",
+        ratingValue: site.googleRating.rating,
+        reviewCount: site.googleRating.reviewCount,
+      };
+    }
     const script = document.createElement("script");
     script.type = "application/ld+json";
     script.textContent = JSON.stringify(schema);
@@ -961,15 +1160,22 @@ function App() {
       <SocialDock />
       <main id="main-content">
         <Hero />
-        <Manifesto />
-        <Space />
+        <ValueStrip />
+        <OneOnOne />
+        <Audiences />
+        <FirstExperience />
         <Coach />
         <Training />
+        <Trial />
+        <Space />
         <BrandStatement />
         <WhyKilo />
+        <LocalInfo />
+        <FAQ />
         <Contact />
       </main>
       <Footer />
+      <MobileBookingBar />
     </>
   );
 }

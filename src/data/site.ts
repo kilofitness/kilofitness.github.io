@@ -57,6 +57,37 @@ export type Trainer = {
   };
 };
 
+export type ValueProp = { title: string; text: string };
+export type Audience = { title: string; text: string };
+export type FirstVisitStep = { title: string; text: string };
+export type Faq = { question: string; answer: string };
+export type Testimonial = {
+  id: string;
+  name?: string;
+  label?: string;
+  quote: string;
+  source?: "google" | "instagram" | "client";
+  sourceUrl?: string;
+};
+
+export type TrialSession = {
+  enabled: boolean;
+  price?: number;
+  durationMinutes?: number;
+  description?: string;
+  includes?: readonly string[];
+};
+
+export type GoogleRating = { rating: number; reviewCount: number; url: string };
+export type BusinessHours = {
+  days: string;
+  hours: string;
+  schemaDays?: string | string[];
+  opens?: string;
+  closes?: string;
+};
+export type Parking = { car?: string; scooter?: string };
+
 const trainers = [
   {
     id: "jessica",
@@ -166,7 +197,7 @@ const trainers = [
     quote: "對我而言，訓練不只是改變外在體態，更重要的是讓身體能夠真正支持你的生活。",
     highlights: ["10 年以上教學經驗", "台灣 × 加拿大"],
     biography: [
-      "曾擔任加拿大保齡球國家代表隊隊員體適能指導員，將肌力訓練、足踝動作與動力鏈整合於訓練之中，協助球員遠離職業傷害，建立更穩定、更有可控能力的身體。",
+      "曾擔任加拿大保齡球國家代表隊隊員體適能指導員，將肌力訓練、足踝動作與動力鏈整合於訓練之中，協助球員建立更穩定、更有可控能力的身體。",
     ],
     credentials: [
       {
@@ -192,16 +223,16 @@ const trainers = [
         description: "建立肌力基礎，提升身體整體活動能力。",
       },
       {
-        title: "銀髮族運動與傷害預防",
-        description: "強化肌力與平衡，守住長期生活品質。",
+        title: "銀髮族運動與肌力訓練",
+        description: "以肌力與平衡為核心，建立日常活動需要的身體功能。",
       },
       {
         title: "體態與動作品質優化",
-        description: "改善身體姿勢，遠離酸痛文明病。",
+        description: "從動作控制與訓練習慣出發，建立更好的訓練基礎。",
       },
       {
         title: "肌肉放鬆與運動恢復",
-        description: "緩解肌肉緊繃，加速訓練後身體恢復，改善關節活動度。",
+        description: "協助訓練後的放鬆與恢復安排。",
       },
     ],
     experience: [
@@ -282,6 +313,19 @@ const trainers = [
   },
 ] satisfies Trainer[];
 
+const trialSession: TrialSession = { enabled: true };
+// Add confirmed local-business details here when they are available. Undefined values stay hidden on the site.
+const optionalGoogleRating = (): GoogleRating | undefined => undefined;
+const optionalBusinessHours = (): readonly BusinessHours[] | undefined => undefined;
+const optionalParking = (): Parking | undefined => undefined;
+const optionalBoolean = (): boolean | undefined => undefined;
+const optionalText = (): string | undefined => undefined;
+const googleRating = optionalGoogleRating();
+const businessHours = optionalBusinessHours();
+const parking = optionalParking();
+const appointmentOnly = optionalBoolean();
+const nearbyLandmark = optionalText();
+
 export const site = {
   name: "KILO Fitness",
   chineseName: "KILO Fitness 海線健身｜沙鹿健身",
@@ -295,6 +339,47 @@ export const site = {
   mapUrl: "https://maps.app.goo.gl/xW347tKsff9i4Fos5",
   canonicalUrl: "https://kilofitness.github.io/",
   locationLabel: "台中・沙鹿",
+  positioning: {
+    eyebrow: "KILO FITNESS · SHALU",
+    title: "沙鹿一對一私人教練",
+    headline: "為你的身體、目標與生活，打造真正適合你的訓練。",
+    services: "增肌減脂 · 體態改善 · 肌力訓練 · 銀髮訓練",
+    brandLine: "你的進步，按照你的節奏。",
+  },
+  valueStrip: ["一對一私人訓練", "台灣 × 加拿大教學經驗", "專業私人教練", "台中 · 沙鹿"],
+  valueProps: [
+    { title: "每一堂，都為你調整", text: "依照你的目標、訓練經驗與當天狀態，安排適合你的內容與強度。" },
+    { title: "每一個動作，都有人看", text: "從姿勢、節奏、重量到活動度，教練即時觀察並協助你建立更好的動作品質。" },
+    { title: "不是套用同一張課表", text: "每個人的身體與生活不同，訓練方式也應該不同。" },
+    { title: "知道自己為什麼這樣練", text: "不只是完成訓練，也逐步了解自己的身體、動作與進步方式。" },
+  ] satisfies readonly ValueProp[],
+  audiences: [
+    { title: "想開始健身，卻不知道怎麼開始", text: "從基本動作與訓練觀念開始，逐步建立自己的節奏。" },
+    { title: "女性增肌減脂與體態雕塑", text: "依照個人目標安排訓練，建立更有力量、也更自在的身體。" },
+    { title: "想改善體態與動作品質", text: "從日常姿勢、活動度與動作控制開始，建立更好的訓練基礎。" },
+    { title: "想提升肌力與身體機能", text: "循序漸進建立力量，讓訓練真正回到生活。" },
+    { title: "銀髮族與中高齡訓練", text: "以肌力、平衡與身體功能為核心，建立能長期維持的活動能力。" },
+  ] satisfies readonly Audience[],
+  firstVisitSteps: [
+    { title: "LINE 聊聊你的目標", text: "告訴我們你目前的狀態、訓練經驗，以及想改善的方向。" },
+    { title: "了解身體與動作", text: "教練先了解你的訓練背景與基本動作狀況。" },
+    { title: "實際進行一對一訓練", text: "透過實際訓練感受 KILO 的教學方式與節奏。" },
+    { title: "找到適合你的訓練安排", text: "根據你的目標與需求，討論後續適合的訓練方向。" },
+  ] satisfies readonly FirstVisitStep[],
+  testimonials: [] satisfies readonly Testimonial[],
+  trialSession,
+  googleRating,
+  businessHours,
+  parking,
+  appointmentOnly,
+  nearbyLandmark,
+  faqs: [
+    { question: "完全沒有健身經驗，也適合嗎？", answer: "可以。教練會依照你的訓練經驗與當下狀態安排內容，不需要先具備健身基礎。" },
+    { question: "一堂課大約多久？", answer: "課程時間依目前方案為準，歡迎透過 LINE 詢問。" },
+    { question: "我要怎麼知道哪位教練適合我？", answer: "可以先透過 LINE 告訴我們你的目標與需求，我們會協助你了解不同教練的訓練方向。" },
+    { question: "KILO 在哪裡？", answer: "台中市沙鹿區台灣大道七段303巷7號，可直接透過 Google Maps 導航。" },
+    { question: "如何預約體驗？", answer: "點擊網站上的 LINE 預約按鈕，告訴我們你的目標與方便的時間即可開始了解。" },
+  ] satisfies readonly Faq[],
   trainers,
   trainingAreas: [
     {
@@ -305,7 +390,7 @@ export const site = {
     {
       icon: "posture",
       title: "體態改善",
-      description: "依照個人目標與狀態，建立可以長期執行的訓練方式。",
+      description: "從訓練習慣、肌力與動作控制出發，建立更穩定、更自在的身體。",
     },
     {
       icon: "movement",
@@ -315,7 +400,7 @@ export const site = {
     {
       icon: "personal",
       title: "個人化訓練",
-      description: "尊重每個人的起點與步調，讓訓練貼近你的日常與目標。",
+      description: "依照你的起點、目標與生活節奏，調整訓練內容與進度。",
     },
   ],
 } as const;

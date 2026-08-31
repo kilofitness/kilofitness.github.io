@@ -18,9 +18,18 @@ npm run preview
 
 ## GitHub Pages 部署
 
-推送到 `main` 後，[deploy-pages.yml](.github/workflows/deploy-pages.yml) 會自動建置並發布網站。預期公開網址是：
+推送到 `main` 後，[deploy-pages.yml](.github/workflows/deploy-pages.yml) 會自動建置並發布網站。目前部署會合併兩個版本：
 
-`https://kilofitness.github.io/`
+- `https://kilofitness.github.io/`：`live` 分支的現行網站
+- `https://kilofitness.github.io/v2/`：`main` 分支的新版網站
+
+首次啟用時，請先建立並推送 `live` 分支，使其指向目前線上版本：
+
+```bash
+git push origin live
+```
+
+之後再推送 `main`，GitHub Actions 會將兩個建置結果一起發布。當要把新版切換成正式首頁時，將 `live` 分支更新為 `main` 的目標 commit，再推送 `live` 與 `main` 重新部署。
 
 首次部署時，請在 GitHub repository 的 **Settings → Pages** 將 Source 設為 **GitHub Actions**。帳號根網址需要 repository 名稱為 `kilofitness.github.io`；若 repository 或帳號名稱改變，請同步更新 `src/data/site.ts` 的 `canonicalUrl` 與 `index.html` 的 canonical／Open Graph 網址。
 

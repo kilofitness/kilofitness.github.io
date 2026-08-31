@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:pages": "npm run build",
+    "build:pages-v2": "tsc -b && vite build --base=/v2/",
     "preview": "vite preview",
     "lint": "eslint ."
   },
