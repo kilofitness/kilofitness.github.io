@@ -67,7 +67,7 @@ const trainers = [
     educationSummary: "Kinesiology Graduate",
     educationSummaryZh: "運動機能學學士",
     intro: "擁有台灣與加拿大健身教學經驗，專注於女性增肌減脂、體態雕塑與動作品質改善。",
-    highlights: ["Taiwan × Canada", "UBC Kinesiology"],
+    highlights: ["台灣 × 加拿大", "英屬哥倫比亞大學運動機能學"],
     credentials: [
       {
         title: "UBC Bachelor of Kinesiology",
@@ -93,10 +93,10 @@ const trainers = [
     ],
     experience: [
       {
-        period: "2026–Present",
+        period: "2026–至今",
         organization: "KILO Fitness",
         location: "台灣",
-        role: "Personal Trainer",
+        role: "私人教練",
       },
       {
         period: "2025–2026",
@@ -107,13 +107,13 @@ const trainers = [
         period: "2025–2026",
         organization: "The Home Court",
         location: "加拿大",
-        role: "Personal Trainer",
+        role: "私人教練",
       },
       {
         period: "2022–2024",
         organization: "莫耳健身",
         location: "台灣",
-        role: "Personal Trainer",
+        role: "私人教練",
       },
     ],
     imageCaptions: {
@@ -164,7 +164,7 @@ const trainers = [
     educationSummaryZh: "動作與肌力教練",
     intro: "擁有 10 年以上運動教學經驗，具備台灣與加拿大跨國教學背景，專注於體態改善、肌力訓練與結構調整。",
     quote: "對我而言，訓練不只是改變外在體態，更重要的是讓身體能夠真正支持你的生活。",
-    highlights: ["10+ Years Teaching Experience", "Taiwan × Canada"],
+    highlights: ["10 年以上教學經驗", "台灣 × 加拿大"],
     biography: [
       "曾擔任加拿大保齡球國家代表隊隊員體適能指導員，將肌力訓練、足踝動作與動力鏈整合於訓練之中，協助球員遠離職業傷害，建立更穩定、更有可控能力的身體。",
     ],
@@ -206,40 +206,40 @@ const trainers = [
     ],
     experience: [
       {
-        period: "2026–Present",
+        period: "2026–至今",
         organization: "KILO Fitness",
         location: "台灣",
-        role: "Personal Trainer",
+        role: "私人教練",
       },
       {
         period: "2025–2026",
         organization: "The Home Court",
         location: "加拿大",
-        role: "Freelance Personal Trainer",
+        role: "自由接案私人教練",
       },
       {
         period: "2024–2025",
         organization: "Burning Hormone Fitness",
         location: "加拿大",
-        role: "Personal Trainer｜Sports Massage Therapist",
+        role: "私人教練｜運動按摩技術員",
       },
       {
         period: "2023–2024",
         organization: "健身工廠",
         location: "台灣",
-        role: "Personal Trainer",
+        role: "私人教練",
       },
       {
         period: "2016–2021",
         organization: "VIA琢璞藝術學院、PariJ Studio、IO 動態娛樂",
         location: "台灣",
-        role: "Physical Development",
+        role: "體能發展指導",
       },
       {
         period: "2017–2019",
         organization: "世界健身、極限健身、永豐棧酒店",
         location: "台灣",
-        role: "Fitness Instructor",
+        role: "體適能指導員",
       },
     ],
     imageCaptions: {

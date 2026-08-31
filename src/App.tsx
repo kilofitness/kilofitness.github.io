@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import kiloLogo from "../Gym Images/Logo/Kilo Logo.png";
 import { ResilientImage } from "./components/ResilientImage";
 import type { ResponsiveImageSource } from "./components/ResilientImage";
 import { site } from "./data/site";
@@ -130,6 +131,21 @@ function ArrowIcon() {
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M5 12h13M13 6l6 6-6 6" />
     </svg>
+  );
+}
+
+function KiloWordmark() {
+  return (
+    <img
+      className="kilo-wordmark"
+      src={kiloLogo}
+      alt=""
+      width="1916"
+      height="821"
+      aria-hidden="true"
+      decoding="async"
+      draggable="false"
+    />
   );
 }
 
@@ -269,7 +285,7 @@ function Header() {
   return (
     <header className={`site-header${scrolled || menuOpen ? " is-solid" : ""}`}>
       <a className="wordmark" href="#top" aria-label="KILO Fitness 回到首頁" onClick={closeMenu}>
-        KILO
+        <KiloWordmark />
       </a>
       <nav className="desktop-nav" aria-label="主要導覽">
         {navigation.map((item) => (
@@ -476,7 +492,6 @@ function TrainerProfile({ trainer }: { trainer: Trainer }) {
             <span>{trainer.chineseName}</span>
           </h2>
           <div className="coach-role">
-            <p>{trainer.role} · {trainer.educationSummary}</p>
             <p>{trainer.roleZh}｜{trainer.educationSummaryZh}</p>
           </div>
           <ul className="coach-highlights" aria-label={`${trainer.name} 教練重點資歷`}>
@@ -634,7 +649,7 @@ function CoachDirectory() {
                 <ArrowIcon />
               </div>
               <h3><span>{trainer.name}</span><small>{trainer.chineseName}</small></h3>
-              <p>{trainer.role} · {trainer.educationSummary}</p>
+              <p>{trainer.roleZh}｜{trainer.educationSummaryZh}</p>
               <ul aria-label={`${trainer.name} 資歷摘要`}>
                 {trainer.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
               </ul>
@@ -827,7 +842,9 @@ function Footer() {
       <div className="page-shell footer-inner">
         <div className="footer-main">
           <div className="footer-brand">
-            <a className="footer-wordmark" href="#top">KILO</a>
+            <a className="footer-wordmark" href="#top" aria-label="KILO Fitness 回到首頁">
+              <KiloWordmark />
+            </a>
             <p>Fitness · Support · Community</p>
           </div>
 

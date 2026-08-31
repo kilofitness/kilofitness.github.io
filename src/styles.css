@@ -234,10 +234,15 @@
   .footer-wordmark {
     position: relative;
     z-index: 102;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 1.55rem;
-    line-height: 1;
-    letter-spacing: 0.18em;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .kilo-wordmark {
+    display: block;
+    width: 5rem;
+    height: auto;
+    user-select: none;
   }
 
   .desktop-nav {
@@ -1098,16 +1103,10 @@
     border-bottom: 1px solid var(--line-light);
   }
 
-  .coach-role p:first-child {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
-  }
-
-  .coach-role p:last-child {
+  .coach-role p {
     color: #5b554d;
     font-size: 0.86rem;
+    letter-spacing: 0.08em;
   }
 
   .coach-highlights {
@@ -1849,7 +1848,10 @@
   .footer-wordmark {
     display: inline-block;
     margin-bottom: 1.35rem;
-    font-size: clamp(2.25rem, 2.8vw, 2.5rem);
+  }
+
+  .footer-wordmark .kilo-wordmark {
+    width: clamp(7rem, 8vw, 7.75rem);
   }
 
   .footer-brand > p {
@@ -2359,7 +2361,11 @@
     }
 
     .wordmark {
-      font-size: 1.3rem;
+      width: auto;
+    }
+
+    .wordmark .kilo-wordmark {
+      width: 4.5rem;
     }
 
     .display-heading {
@@ -2637,8 +2643,8 @@
       margin-top: 2.5rem;
     }
 
-    .coach-role p:first-child {
-      font-size: 0.62rem;
+    .coach-role p {
+      font-size: 0.78rem;
       line-height: 1.7;
     }
 
