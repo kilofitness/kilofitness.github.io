@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { ResilientImage } from "./components/ResilientImage";
+import type { ResponsiveImageSource } from "./components/ResilientImage";
 import { site } from "./data/site";
 import type { Trainer, TrainerImage } from "./data/site";
 
@@ -26,53 +28,63 @@ const socialLinks = [
   { label: "Facebook", href: site.facebook },
 ];
 
+const socialDockLinks = [
+  { label: "Instagram", href: site.instagram, icon: "instagram", tracking: "instagram-floating" },
+  { label: "Threads", href: site.threads, icon: "threads", tracking: "threads-floating" },
+  { label: "Facebook", href: site.facebook, icon: "facebook", tracking: "facebook-floating" },
+  { label: "LINE", href: site.lineUrl, icon: "line", tracking: "line-floating" },
+] as const;
+
 const imageUrl = (filename: string) => `${import.meta.env.BASE_URL}images/${filename}`;
 
 function Photo({ name, alt, width, height, className = "", eager = false, preferJpeg = false }: PhotoProps) {
+  const sizes = "(max-width: 767px) 100vw, (max-width: 1400px) 85vw, 1400px";
+  const sources: ResponsiveImageSource[] = preferJpeg
+    ? []
+    : [{
+        type: "image/avif",
+        srcSet: `${imageUrl(`${name}-1200.avif`)} 1200w`,
+        sizes,
+      }];
+
   return (
-    <picture className={`photo ${className}`}>
-      {!preferJpeg && (
-        <source
-          type="image/avif"
-          srcSet={`${imageUrl(`${name}-1200.avif`)} 1200w`}
-          sizes="(max-width: 767px) 100vw, (max-width: 1400px) 85vw, 1400px"
-        />
-      )}
-      <img
-        src={imageUrl(`${name}-1600.jpg`)}
-        srcSet={`${imageUrl(`${name}-1000.jpg`)} 1000w, ${imageUrl(`${name}-1600.jpg`)} 1600w`}
-        sizes="(max-width: 767px) 100vw, (max-width: 1400px) 85vw, 1400px"
-        alt={alt}
-        width={width}
-        height={height}
-        loading={eager ? "eager" : "lazy"}
-        fetchPriority={eager ? "high" : "auto"}
-        decoding={eager ? "sync" : "async"}
-      />
-    </picture>
+    <ResilientImage
+      className={className}
+      sources={sources}
+      src={imageUrl(`${name}-1600.jpg`)}
+      srcSet={`${imageUrl(`${name}-640.jpg`)} 640w, ${imageUrl(`${name}-1000.jpg`)} 1000w, ${imageUrl(`${name}-1600.jpg`)} 1600w`}
+      sizes={sizes}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={eager ? "eager" : "lazy"}
+      fetchPriority={eager ? "high" : "auto"}
+      decoding={eager ? "sync" : "async"}
+    />
   );
 }
 
 function HeroMedia() {
+  const sources: ResponsiveImageSource[] = [{
+    media: "(max-width: 900px) and (orientation: portrait)",
+    srcSet: `${imageUrl("rack-portrait-640.jpg")} 640w, ${imageUrl("rack-portrait-1000.jpg")} 1000w, ${imageUrl("rack-portrait-1600.jpg")} 1600w`,
+    sizes: "100vw",
+  }];
+
   return (
-    <picture className="photo hero-photo">
-      <source
-        media="(max-width: 900px) and (orientation: portrait)"
-        srcSet={`${imageUrl("rack-portrait-1000.jpg")} 1000w, ${imageUrl("rack-portrait-1600.jpg")} 1600w`}
-        sizes="100vw"
-      />
-      <img
-        src={imageUrl("training-space-1600.jpg")}
-        srcSet={`${imageUrl("training-space-1000.jpg")} 1000w, ${imageUrl("training-space-1600.jpg")} 1600w`}
-        sizes="100vw"
-        alt="KILO Fitness 沙鹿私人訓練空間與重訓設備"
-        width={7008}
-        height={3944}
-        loading="eager"
-        fetchPriority="high"
-        decoding="async"
-      />
-    </picture>
+    <ResilientImage
+      className="hero-photo"
+      sources={sources}
+      src={imageUrl("training-space-1600.jpg")}
+      srcSet={`${imageUrl("training-space-640.jpg")} 640w, ${imageUrl("training-space-1000.jpg")} 1000w, ${imageUrl("training-space-1600.jpg")} 1600w`}
+      sizes="100vw"
+      alt="KILO Fitness 沙鹿私人訓練空間與重訓設備"
+      width={7008}
+      height={3944}
+      loading="eager"
+      fetchPriority="high"
+      decoding="async"
+    />
   );
 }
 
@@ -83,28 +95,33 @@ type TrainerPhotoProps = {
 };
 
 function TrainerPhoto({ image, className = "", sizes }: TrainerPhotoProps) {
-  const [smallWidth, largeWidth] = image.jpegWidths;
+  const largeWidth = image.jpegWidths.at(-1);
+  if (!largeWidth) return null;
+
+  const sources: ResponsiveImageSource[] = image.avifWidth
+    ? [{
+        type: "image/avif",
+        srcSet: `${imageUrl(`${image.name}-${image.avifWidth}.avif`)} ${image.avifWidth}w`,
+        sizes,
+      }]
+    : [];
+  const srcSet = image.jpegWidths
+    .map((candidateWidth) => `${imageUrl(`${image.name}-${candidateWidth}.jpg`)} ${candidateWidth}w`)
+    .join(", ");
 
   return (
-    <picture className={`photo ${className}`}>
-      {image.avifWidth && (
-        <source
-          type="image/avif"
-          srcSet={`${imageUrl(`${image.name}-${image.avifWidth}.avif`)} ${image.avifWidth}w`}
-          sizes={sizes}
-        />
-      )}
-      <img
-        src={imageUrl(`${image.name}-${largeWidth}.jpg`)}
-        srcSet={`${imageUrl(`${image.name}-${smallWidth}.jpg`)} ${smallWidth}w, ${imageUrl(`${image.name}-${largeWidth}.jpg`)} ${largeWidth}w`}
-        sizes={sizes}
-        alt={image.alt}
-        width={image.width}
-        height={image.height}
-        loading="lazy"
-        decoding="async"
-      />
-    </picture>
+    <ResilientImage
+      className={className}
+      sources={sources}
+      src={imageUrl(`${image.name}-${largeWidth}.jpg`)}
+      srcSet={srcSet}
+      sizes={sizes}
+      alt={image.alt}
+      width={image.width}
+      height={image.height}
+      loading="lazy"
+      decoding="async"
+    />
   );
 }
 
@@ -113,6 +130,104 @@ function ArrowIcon() {
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M5 12h13M13 6l6 6-6 6" />
     </svg>
+  );
+}
+
+type SocialIconName = (typeof socialDockLinks)[number]["icon"];
+
+function SocialIcon({ name }: { name: SocialIconName }) {
+  const icons: Record<SocialIconName, React.ReactNode> = {
+    instagram: (
+      <>
+        <rect x="12" y="12" width="40" height="40" rx="11" />
+        <circle cx="32" cy="32" r="9" />
+        <circle cx="45" cy="19" r="2" className="social-icon-fill" />
+      </>
+    ),
+    threads: (
+      <>
+        <path d="M43 23c-2-8-8-12-16-12-10 0-16 8-16 20 0 14 8 22 19 22 10 0 17-6 17-14 0-7-5-12-13-12-7 0-12 4-12 9 0 5 3 8 8 8 8 0 13-7 13-17 0-11-6-17-16-17-6 0-11 3-13 8" />
+        <path d="M36 20c6 1 11 4 14 8" />
+      </>
+    ),
+    facebook: (
+      <path d="M35 54V34h7l1-8h-8v-4c0-4 2-5 5-5h4V9h-7c-8 0-12 5-12 13v4h-6v8h6v20" />
+    ),
+    line: (
+      <>
+        <path d="M8 28C8 17 18 8 32 8s24 9 24 20-10 20-24 20c-2.5 0-5-.3-7-1L14 53l3-10C11 39 8 34 8 28Z" />
+        <path d="M17 23v13h7M28 23v13M32 36V23l8 13V23M50 23h-6v13h6M44 29h5" />
+      </>
+    ),
+  };
+
+  return (
+    <svg className="social-icon" viewBox="0 0 64 64" aria-hidden="true">
+      {icons[name]}
+    </svg>
+  );
+}
+
+const socialDockStorageKey = "kilo-social-dock-open";
+
+function getInitialSocialDockState() {
+  try {
+    const savedState = window.localStorage.getItem(socialDockStorageKey);
+    if (savedState !== null) return savedState === "true";
+  } catch {
+    // Storage may be unavailable in privacy-restricted browsing contexts.
+  }
+  return window.matchMedia("(min-width: 901px)").matches;
+}
+
+function SocialDock() {
+  const [open, setOpen] = useState(getInitialSocialDockState);
+
+  const toggleDock = () => {
+    setOpen((current) => {
+      const next = !current;
+      try {
+        window.localStorage.setItem(socialDockStorageKey, String(next));
+      } catch {
+        // The control still works when storage is unavailable.
+      }
+      return next;
+    });
+  };
+
+  return (
+    <aside className={`social-dock${open ? " is-open" : ""}`} aria-label="KILO 社群捷徑">
+      <button
+        className="social-dock-toggle"
+        type="button"
+        aria-controls="social-dock-links"
+        aria-expanded={open}
+        aria-label={open ? "收合社群捷徑" : "展開社群捷徑"}
+        onClick={toggleDock}
+      >
+        <span>{open ? "HIDE" : "SOCIAL"}</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h13M13 6l6 6-6 6" />
+        </svg>
+      </button>
+      <nav id="social-dock-links" aria-label="前往 KILO 社群平台" aria-hidden={!open}>
+        {socialDockLinks.map((social) => (
+          <a
+            key={social.label}
+            href={social.href}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`前往 KILO ${social.label}（另開新視窗）`}
+            tabIndex={open ? 0 : -1}
+            data-cta={social.tracking}
+          >
+            <SocialIcon name={social.icon} />
+            <span>{social.label}</span>
+            <small aria-hidden="true">↗</small>
+          </a>
+        ))}
+      </nav>
+    </aside>
   );
 }
 
@@ -130,7 +245,7 @@ function Header() {
 
   useEffect(() => {
     document.body.classList.toggle("menu-open", menuOpen);
-    const pageContent = document.querySelectorAll<HTMLElement>("main, .footer");
+    const pageContent = document.querySelectorAll<HTMLElement>("main, .footer, .social-dock");
     pageContent.forEach((element) => {
       if (menuOpen) element.setAttribute("inert", "");
       else element.removeAttribute("inert");
@@ -250,7 +365,7 @@ function Hero() {
 
 const pillars = [
   { en: "FITNESS", zh: "運動", text: "專注於有效、安全且適合個人的訓練。" },
-  { en: "SUPPORT", zh: "陪伴", text: "每個人的起點不同，訓練也應該按照自己的節奏前進。" },
+  { en: "SUPPORT", zh: "陪伴", text: "讓習慣更容易養成，陪你把運動變成生活的一部分，變得更健康、更有力量。" },
   { en: "COMMUNITY", zh: "社群", text: "讓健身不只是一堂課，而是一段有人一起走的過程。" },
 ];
 
@@ -305,8 +420,7 @@ function Space() {
           <figcaption><span>02</span> ARRIVAL · KILO AT NIGHT</figcaption>
         </figure>
         <div className="editorial-note reveal">
-          <span className="large-index">K</span>
-          <p>光線、材質與設備各有位置。<br />空間保持克制，讓注意力回到每一次動作。</p>
+          <p>每一道光線、每一處細節，都有它存在的理由。<br />留下一點空間，讓注意力回到身體，<br />回到每一次動作。</p>
         </div>
       </div>
 
@@ -324,16 +438,15 @@ function Space() {
       <div className="page-shell amenity-layout">
         <div className="amenity-note reveal">
           <p className="eyebrow">DETAILS · BEYOND TRAINING</p>
-          <p>從訓練設備到盥洗空間，<br />每一處細節都維持同樣的用心。</p>
+          <p>從訓練設備到公共空間，<br />每一處細節，都維持同樣的用心。</p>
         </div>
         <div className="amenity-gallery">
           <figure className="amenity-photo reveal-image">
             <Photo name="amenities-sink" alt="KILO Fitness 盥洗空間的洗手台與暖色鏡面燈光" width={3944} height={7008} />
-            <figcaption><span>05</span> AMENITIES</figcaption>
+            <figcaption><span>05</span> RESTROOM</figcaption>
           </figure>
           <figure className="amenity-photo amenity-photo-secondary reveal-image">
             <Photo name="amenities-toilet" alt="KILO Fitness 盥洗空間內的洗手間與暖色線性照明" width={3944} height={7008} />
-            <figcaption>RESTROOM</figcaption>
           </figure>
         </div>
       </div>
@@ -342,8 +455,19 @@ function Space() {
 }
 
 function TrainerProfile({ trainer }: { trainer: Trainer }) {
+  const trainerIndex = site.trainers.findIndex((item) => item.id === trainer.id);
+
   return (
-    <article className="coach-profile" aria-labelledby={`${trainer.id}-name`}>
+    <article
+      className="coach-profile"
+      id={`coach-${trainer.id}`}
+      data-trainer={trainer.id}
+      aria-labelledby={`${trainer.id}-name`}
+    >
+      <div className="coach-profile-marker reveal">
+        <span>COACH {String(trainerIndex + 1).padStart(2, "0")} / {String(site.trainers.length).padStart(2, "0")}</span>
+        <a href="#coach-directory">回到教練一覽 <span aria-hidden="true">↑</span></a>
+      </div>
       <header className="coach-feature">
         <div className="coach-identity reveal">
           <p className="coach-kicker">MEET YOUR COACH</p>
@@ -355,16 +479,29 @@ function TrainerProfile({ trainer }: { trainer: Trainer }) {
             <p>{trainer.role} · {trainer.educationSummary}</p>
             <p>{trainer.roleZh}｜{trainer.educationSummaryZh}</p>
           </div>
+          <ul className="coach-highlights" aria-label={`${trainer.name} 教練重點資歷`}>
+            {trainer.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
+          </ul>
           <p className="coach-introduction">{trainer.intro}</p>
+          {trainer.quote && <blockquote className="coach-quote">「{trainer.quote}」</blockquote>}
         </div>
         <figure className="coach-primary-photo reveal-image">
           <TrainerPhoto
             image={trainer.images.primary}
             sizes="(max-width: 640px) 89vw, (max-width: 900px) 58vw, 46vw"
           />
-          <figcaption><span>01</span> COACHING · MOVEMENT FIRST</figcaption>
+          <figcaption><span>01</span> {trainer.imageCaptions.primary}</figcaption>
         </figure>
       </header>
+
+      {trainer.biography && trainer.biography.length > 0 && (
+        <section className="coach-biography reveal" aria-label={`${trainer.name} 教練介紹`}>
+          <p className="eyebrow">COACHING BACKGROUND</p>
+          <div>
+            {trainer.biography.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          </div>
+        </section>
+      )}
 
       <section className="coach-credentials" aria-labelledby={`${trainer.id}-credentials`}>
         <div className="credential-copy">
@@ -377,7 +514,10 @@ function TrainerProfile({ trainer }: { trainer: Trainer }) {
               <article className="credential-item reveal" key={credential.title}>
                 <span>0{index + 1}</span>
                 <div>
-                  <h4>{credential.title}</h4>
+                  <h4>
+                    <span>{credential.title}</span>
+                    {credential.titleDetail && <small>{credential.titleDetail}</small>}
+                  </h4>
                   <p>{credential.subtitle}</p>
                 </div>
               </article>
@@ -389,7 +529,7 @@ function TrainerProfile({ trainer }: { trainer: Trainer }) {
             image={trainer.images.studio}
             sizes="(max-width: 640px) 77vw, (max-width: 900px) 48vw, 32vw"
           />
-          <figcaption>KILO · SHALU</figcaption>
+          <figcaption>{trainer.imageCaptions.studio}</figcaption>
         </figure>
       </section>
 
@@ -401,9 +541,12 @@ function TrainerProfile({ trainer }: { trainer: Trainer }) {
           </div>
           <ol className="specialty-list">
             {trainer.specialties.map((specialty, index) => (
-              <li className="reveal" key={specialty}>
+              <li className="reveal" key={specialty.title}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                <p>{specialty}</p>
+                <div>
+                  <p>{specialty.title}</p>
+                  {specialty.description && <small>{specialty.description}</small>}
+                </div>
               </li>
             ))}
           </ol>
@@ -413,18 +556,18 @@ function TrainerProfile({ trainer }: { trainer: Trainer }) {
             image={trainer.images.coaching}
             sizes="(max-width: 640px) 84vw, (max-width: 900px) 52vw, 35vw"
           />
-          <figcaption>COACHING · ATTENTION TO DETAIL</figcaption>
+          <figcaption>{trainer.imageCaptions.coaching}</figcaption>
         </figure>
       </section>
 
       <figure className="coach-action-photo reveal-image">
         <TrainerPhoto
-          image={trainer.images.competition}
+          image={trainer.images.action}
           sizes="(max-width: 1400px) 89vw, 1360px"
         />
         <figcaption>
-          <span>IN MOTION</span>
-          <p>Training is personal.</p>
+          <span>{trainer.imageCaptions.actionLabel}</span>
+          <p>{trainer.imageCaptions.actionText}</p>
         </figcaption>
       </figure>
 
@@ -468,11 +611,47 @@ function TrainerProfile({ trainer }: { trainer: Trainer }) {
   );
 }
 
+function CoachDirectory() {
+  return (
+    <div className="coach-directory" id="coach-directory">
+      <div className="coach-directory-heading reveal">
+        <p className="eyebrow">MEET THE TEAM</p>
+        <h2>找到理解你目標的教練。</h2>
+        <p>先認識每位教練的訓練方向，再查看完整經歷與專長。</p>
+      </div>
+      <nav className="coach-directory-list" aria-label="選擇教練">
+        {site.trainers.map((trainer, index) => (
+          <a className="coach-directory-item reveal" href={`#coach-${trainer.id}`} key={trainer.id}>
+            <figure>
+              <TrainerPhoto
+                image={trainer.images.primary}
+                sizes="(max-width: 640px) 34vw, (max-width: 900px) 26vw, 15vw"
+              />
+            </figure>
+            <div className="coach-directory-copy">
+              <div className="coach-directory-meta">
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <ArrowIcon />
+              </div>
+              <h3><span>{trainer.name}</span><small>{trainer.chineseName}</small></h3>
+              <p>{trainer.role} · {trainer.educationSummary}</p>
+              <ul aria-label={`${trainer.name} 資歷摘要`}>
+                {trainer.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}
+              </ul>
+            </div>
+          </a>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
 function Coach() {
   return (
     <section className="coach-section light-section" id="coach">
       <div className="page-shell">
-        <p className="eyebrow coach-section-label reveal">YOUR COACH · 03</p>
+        <p className="eyebrow coach-section-label reveal">YOUR COACHES · 03</p>
+        <CoachDirectory />
         <div className="trainer-profiles">
           {site.trainers.map((trainer) => (
             <TrainerProfile trainer={trainer} key={trainer.id} />
@@ -480,6 +659,47 @@ function Coach() {
         </div>
       </div>
     </section>
+  );
+}
+
+type TrainingIconName = (typeof site.trainingAreas)[number]["icon"];
+
+function TrainingIcon({ name }: { name: TrainingIconName }) {
+  const paths: Record<TrainingIconName, React.ReactNode> = {
+    strength: (
+      <>
+        <path d="M7 25v14M13 20v24M19 27v10M19 32h26M45 27v10M51 20v24M57 25v14" />
+        <path d="M27 29v6M37 29v6" />
+      </>
+    ),
+    posture: (
+      <>
+        <circle cx="32" cy="12" r="5" />
+        <path d="M19 27c4-6 8-9 13-9s9 3 13 9M32 18v28M25 28l-5 21M39 28l5 21M24 46h16" />
+        <path d="M27 35c3 2 7 2 10 0" />
+      </>
+    ),
+    movement: (
+      <>
+        <circle cx="24" cy="11" r="4" />
+        <path d="m25 16 9 12 11 4M34 28 23 39 11 51M34 28l5 15 14 8M18 25l10 3" />
+        <path d="M7 55h50M43 17c5 1 9 4 12 8" />
+      </>
+    ),
+    personal: (
+      <>
+        <circle cx="32" cy="24" r="5" />
+        <path d="M21 47c1-8 5-13 11-13s10 5 11 13" />
+        <path d="M22 13h-8v8M42 13h8v8M22 51h-8v-8M42 51h8v-8" />
+        <path d="M28 43h8" />
+      </>
+    ),
+  };
+
+  return (
+    <svg className="training-icon" viewBox="0 0 64 64" aria-hidden="true">
+      {paths[name]}
+    </svg>
   );
 }
 
@@ -500,6 +720,7 @@ function Training() {
                 <h3>{area.title}</h3>
                 <p>{area.description}</p>
               </div>
+              <TrainingIcon name={area.icon} />
             </article>
           ))}
         </div>
@@ -586,14 +807,12 @@ function Contact() {
               target="_blank"
               rel="noreferrer"
               data-cta="instagram-contact"
+              aria-label="在 Instagram 關注 KILO（另開新視窗）"
             >
-              Instagram 私訊 <ArrowIcon />
+              Instagram 關注 KILO <ArrowIcon />
             </a>
             {site.phone && (
               <a className="secondary-contact" href={`tel:${site.phone}`}>電話聯絡 <ArrowIcon /></a>
-            )}
-            {site.mapUrl && (
-              <a className="secondary-contact" href={site.mapUrl} target="_blank" rel="noreferrer">Google 地圖 <ArrowIcon /></a>
             )}
           </div>
         </div>
@@ -606,13 +825,50 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="page-shell footer-inner">
-        <div>
-          <a className="footer-wordmark" href="#top">KILO</a>
-          <p>Fitness · Support · Community</p>
+        <div className="footer-main">
+          <div className="footer-brand">
+            <a className="footer-wordmark" href="#top">KILO</a>
+            <p>Fitness · Support · Community</p>
+          </div>
+
+          <div className="footer-contact">
+            <p className="footer-column-label">CONTACT</p>
+            {site.address && (
+              <address className="footer-location">
+                <div className="footer-contact-group">
+                  <p className="footer-label">ADDRESS · 地址</p>
+                  <a
+                    className="footer-address-link"
+                    href={site.mapUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="在 Google Maps 查看 KILO Fitness 地址（另開新視窗）"
+                    data-cta="directions-footer"
+                  >
+                    <span>{site.address}</span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+                {site.phone && (
+                  <div className="footer-contact-group">
+                    <p className="footer-label">PHONE · 電話</p>
+                    <a className="footer-phone-link" href={`tel:${site.phone}`}>
+                      {site.phoneDisplay}
+                    </a>
+                  </div>
+                )}
+              </address>
+            )}
+          </div>
+
+          <nav className="footer-nav" aria-label="頁尾導覽">
+            <p className="footer-column-label">EXPLORE</p>
+            <div>
+              {navigation.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
+            </div>
+          </nav>
         </div>
-        <nav aria-label="頁尾導覽">
-          {navigation.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
-        </nav>
+
         <div className="footer-meta">
           <div className="footer-socials" aria-label="KILO 社群平台">
             {socialLinks.map((social) => (
@@ -685,6 +941,7 @@ function App() {
     <>
       <a className="skip-link" href="#main-content">跳至主要內容</a>
       <Header />
+      <SocialDock />
       <main id="main-content">
         <Hero />
         <Manifesto />
