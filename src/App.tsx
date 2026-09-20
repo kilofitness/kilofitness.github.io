@@ -16,6 +16,8 @@ type PhotoProps = {
   preferJpeg?: boolean;
 };
 
+const IMAGE_VERSION = "20260920-1";
+
 const navigation = [
   { label: "一對一訓練", href: "#one-on-one" },
   { label: "適合誰", href: "#for-you" },
@@ -37,22 +39,15 @@ const socialDockLinks = [
   { label: "LINE", href: site.lineUrl, icon: "line", tracking: "line-floating" },
 ] as const;
 
-const imageUrl = (filename: string) => `${import.meta.env.BASE_URL}images/${filename}`;
+const imageUrl = (filename: string) => `${import.meta.env.BASE_URL}images/${filename}?v=${IMAGE_VERSION}`;
 
-function Photo({ name, alt, width, height, className = "", eager = false, preferJpeg = false }: PhotoProps) {
+function Photo({ name, alt, width, height, className = "", eager = false }: PhotoProps) {
   const sizes = "(max-width: 767px) 100vw, (max-width: 1400px) 85vw, 1400px";
-  const sources: ResponsiveImageSource[] = preferJpeg
-    ? []
-    : [{
-        type: "image/avif",
-        srcSet: `${imageUrl(`${name}-1200.avif`)} 1200w`,
-        sizes,
-      }];
 
   return (
     <ResilientImage
       className={className}
-      sources={sources}
+      sources={[]}
       src={imageUrl(`${name}-1600.jpg`)}
       srcSet={`${imageUrl(`${name}-640.jpg`)} 640w, ${imageUrl(`${name}-1000.jpg`)} 1000w, ${imageUrl(`${name}-1600.jpg`)} 1600w`}
       sizes={sizes}
